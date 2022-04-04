@@ -30,6 +30,16 @@
     </h1>
   </div>
 
+  <div id="end" class="hidden">
+    <h1>
+      Thanks for playing!
+    </h1>
+    <!--
+    <button id="Yes" onclick="newGame()">Yes</button>
+    <button id="No" onclick="endGame()">No</button>
+    -->
+  </div>
+
   <div id="cards">
     <img id="card1" src="1J.svg" style="width:auto;">
     <input type="checkbox" id="c1" value="1" class="hidden">
@@ -154,8 +164,12 @@
           if (obj.winner_id != -1)
           {
             alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
           }
-          if (obj.turn == playerID && obj.round_num == 1 && obj.turn == 0) {
+          else if (obj.turn == playerID && obj.round_num == 1 && obj.turn == 0) {
             document.getElementById("actionButtons").classList.remove("hidden");
             document.getElementById("fold").classList.add("hidden");
           }
@@ -169,8 +183,13 @@
           if (obj.winner_id != -1)
           {
             alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
           }
-          if (obj.turn == playerID) {
+          else if (obj.turn == playerID) {
+            alert("Please tick the cards that you would like to discard");
             document.getElementById("drawPrompt").classList.remove("hidden");
             for (let i = 1; i < 6; i++) {
               document.getElementById("c"+(i)).classList.remove("hidden");
@@ -182,8 +201,12 @@
           if (obj.winner_id != -1)
           {
             alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
           }
-          if (obj.turn == playerID) {
+          else if (obj.turn == playerID) {
             document.getElementById("actionButtons").classList.remove("hidden");
           }
           break;
@@ -192,12 +215,14 @@
           if (obj.winner_id != -1)
           {
             alert("Player #" + (obj.winner_id+1) + " Won!");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
           }
-          if (obj.turn == playerID) {
-            document.getElementById("actionButtons").classList.remove("hidden");
-          }
+          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("cards").classList.add("hidden");
           break;
         default:
+          
           break;
       }
     }
@@ -245,6 +270,26 @@
 
   }
   */
+
+  function newGame() {
+    document.getElementById("end").classList.add("hidden");
+    var msg = {
+      event: "NEW",
+      playerID: playerID,
+      name: name
+    };
+    connection.send(JSON.stringify(msg));
+  }
+
+  function endGame() {
+    document.getElementById("end").classList.add("hidden");
+    var msg = {
+      event: "END",
+      playerID: playerID,
+      name: name
+    };
+    connection.send(JSON.stringify(msg));
+  }
 
   // when stand is chosen, prompt the user to click and choose on which cards to discard, if none, just click confirm
   function stand(cond) {

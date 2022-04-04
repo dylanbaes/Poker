@@ -42,7 +42,21 @@ public class Game {
             }
         }
         players.remove(playerid);
-        
+    }
+
+    public void newGame() {
+        turn = 0;
+        round_num = 0;
+        winner_id = -1;
+        players.get(0).newPile();
+        int[] discard = {0,1,2,3,4};
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discard);
+        }
+    }
+
+    public void quit () {
+
     }
 
     public void processMessage(String msg) {
@@ -115,6 +129,14 @@ public class Game {
                 winner_id = 500; // A winner id of 500 means that there has been an error
             }
             //It is the showdown round and put the hands of both players through the is_better_than() in Hand.java
+        }
+        else if (round_num > 4) {
+            if(event.event == UserEventType.END) {
+                // end the game
+            }
+            else if (event.event == UserEventType.NEW) {
+                newGame();
+            }
         }
         /*
         for(i=0;i<players.size();i++) // Count number of players who've lost

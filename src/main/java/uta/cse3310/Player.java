@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 
 public class Player extends Card {
+    int ready = 0;
     int Id;
     String Name;
     boolean win = false;
@@ -86,6 +87,10 @@ public class Player extends Card {
     public String asJSONString() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    public void newPile () {
+        Player.pile = new HashMap<>();
     }
 
 }
