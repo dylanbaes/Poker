@@ -8,26 +8,55 @@
 </head>
 
 <div id ="credentials"></div>
-
 <body>
+  <!--
   <p>message: <input id="send_text" type="text">
     <input type="button" name="send_button" value="send" onclick="send()">
   </p>
+
   <div id="nameInput">
     <p>name: <input id="sendName" type="text">
       <input type="button" name="sendName" value="Name" onclick="sendName()">
     </p>
   </div>
-
+  -->
   <div id="rounds">
 
   </div>
 
-  <img id="card1" src="1J.svg" style="width:auto;">
-  <img id="card2" src="1J.svg" style="width:auto;">
-  <img id="card3" src="1J.svg" style="width:auto;">
-  <img id="card4" src="1J.svg" style="width:auto;">
-  <img id="card5" src="1J.svg" style="width:auto;">
+  <div id="waiting">
+    <h1>
+      Waiting for more players...
+    </h1>
+  </div>
+
+  <div id="end" class="hidden">
+    <h1>
+      Thanks for playing!
+    </h1>
+    <!--
+    <button id="Yes" onclick="newGame()">Yes</button>
+    <button id="No" onclick="endGame()">No</button>
+    -->
+  </div>
+
+  <div id="cards">
+    <img id="card1" src="1J.svg" style="width:auto;">
+    <input type="checkbox" id="c1" value="1" class="hidden">
+    <label for="c1">Card 1</label>
+    <img id="card2" src="1J.svg" style="width:auto;">
+    <input type="checkbox" id="c2" value="2" class="hidden">
+    <label for="c2">Card 2</label>
+    <img id="card3" src="1J.svg" style="width:auto;">
+    <input type="checkbox" id="c3" value="3" class="hidden">
+    <label for="c3">Card 3</label>
+    <img id="card4" src="1J.svg" style="width:auto;">
+    <input type="checkbox" id="c4" value="4" class="hidden">
+    <label for="c4">Card 4</label>
+    <img id="card5" src="1J.svg" style="width:auto;">
+    <input type="checkbox" id="c5" value="5" class="hidden">
+    <label for="c5">Card 5</label>
+  </div>
 
   <div id="actionButtons" class="hidden">
     <button id="stand" onclick="stand(0)">Stand</button>
@@ -48,8 +77,11 @@
     <button id="confirm" onclick="bet(slider.value)">Confirm</button>
     <button id="cancel" onclick="bet(-1)">Cancel</button>
   </div>
+  <div id="drawPrompt" class="hidden">
+    <button id="Confirm" onclick="draw()">Confirm</button>
+  </div>
 
-  <div id="textbox"></div>
+  <div id="textbox" class="hidden"></div>
   <div id="roundDisplay"></div>
 </body>
 
@@ -59,7 +91,7 @@
   var connection = null;
 
   var serverUrl;
-  serverUrl ="ws://" + window.location.hostname + ":8880";
+  serverUrl ="ws://" + window.location.hostname + ":8887";
   
   connection = new WebSocket(serverUrl);
   connection.onopen = function (evt) {
@@ -71,6 +103,7 @@
   var cards = [];
   var name = "Player " + (playerID+1);
   var cardI = ["card1", "card2", "card3", "card4", "card5"];
+  var start = 0;
 
   connection.onmessage = function (evt) {
     var msg;
@@ -94,54 +127,106 @@
       for (let i = 0; i < 5; i++) {
         cards[i] = obj.CardId[i];
       }
-      document.getElementById("textbox").innerText =
       document.getElementById("textbox").innerText + '\n\n' + "Player ID is " + playerID;
       for (let i = 0; i < 5; i++) {
         document.getElementById(cardI[i]).src = cards[i].toString()+".svg";
         //console.log("attempted " + cardI[i] + " " + cards[i].toString()+".svg");
       }
+      name = "Player " + (playerID+1);
+      document.getElementById("credentials").innerHTML='ID:'+playerID+'\n'+name;
     } else {
+      document.getElementById("rounds").innerText = "It is Player " + (obj.turn+1) + "'s turn";
+      if (obj.players.length == 1 && start == 0) {
+        document.getElementById("cards").classList.add("hidden");
+        document.getElementById("actionButtons").classList.add("hidden");
+        return;
+      } 
+      else if (obj.players.length > 1 && start == 0) {
+        document.getElementById("cards").classList.remove("hidden");
+        document.getElementById("waiting").classList.add("hidden");
+        start++;
+      }
+      console.log(obj.players.length);
+      for (const player of obj.players) {
+        if (playerID == player.Id) {
+          for (let i = 0; i < 5; i++) {
+            var filename = player.CardId[i]+".svg";
+            //console.log("changing " + document.getElementById(cardI[i]).src + " to " + filename);
+            document.getElementById(cardI[i]).src=filename;
+          }
+        }
+      }
       console.log("player ID = " + playerID + " turn = " + obj.turn);
-      if (obj.round_num == 1)
-      {
-        document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #1";
-      }
-      else if (obj.round_num == 2)
-      {
-        document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nDraw Round";
-      }
-      else if (obj.round_num == 4)
-      {
-        document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nShowdown Round";
-      }
-      else
-      {
-        document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #2";
-      }
-      if (obj.turn == playerID) {
-        document.getElementById("actionButtons").classList.remove("hidden");
+      // Keep switching turns to make actions until rounds reach round 4 which is the showdown round
+      switch (obj.round_num) {
+        case 1:
+          document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #1";
+          if (obj.winner_id != -1)
+          {
+            alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
+          }
+          else if (obj.turn == playerID && obj.round_num == 1 && obj.turn == 0) {
+            document.getElementById("actionButtons").classList.remove("hidden");
+            document.getElementById("fold").classList.add("hidden");
+          }
+          else if (obj.turn == playerID) {
+            document.getElementById("actionButtons").classList.remove("hidden");
+          }
+          
+          break;
+        case 2:
+          document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nDraw Round\nPlease check the cards that you would like to discard"; // Draw Round
+          if (obj.winner_id != -1)
+          {
+            alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
+          }
+          else if (obj.turn == playerID) {
+            alert("Please tick the cards that you would like to discard");
+            document.getElementById("drawPrompt").classList.remove("hidden");
+            for (let i = 1; i < 6; i++) {
+              document.getElementById("c"+(i)).classList.remove("hidden");
+            }
+          }
+          break;
+        case 3:
+          document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round";
+          if (obj.winner_id != -1)
+          {
+            alert("Player " + (obj.winner_id+1) + " Won!");
+            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("cards").classList.add("hidden");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
+          }
+          else if (obj.turn == playerID) {
+            document.getElementById("actionButtons").classList.remove("hidden");
+          }
+          break;
+        case 4:
+          document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nShowdown Round"; // Showdown Round
+          if (obj.winner_id != -1)
+          {
+            alert("Player #" + (obj.winner_id+1) + " Won!");
+            document.getElementById("actionButtons").classList.add("hidden");
+            document.getElementById("roundDisplay").classList.add("hidden");
+          }
+          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("cards").classList.add("hidden");
+          break;
+        default:
+          
+          break;
       }
     }
-    
-    //else {
-      // process the game state
-      // this will just have one card change every time a new game state comes in.
-      // the term LUT means "look up table".  you will see it sometimes in code written last 
-      // century.
-      /*
-      cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
-      
-      document.getElementById("card4").src = cardLUT[cardIdx];
-      cardIdx = cardIdx + 1;
-      if (cardIdx > 6) {
-        cardIdx = 0;
-      }
-      */
-    //}
-    //console.log("the cardIdx is " + cardIdx)
   }
-
-  //document.getElementById("credentials").innerHTML='ID:'+playerID+'\n'+name;
 
   function rangeSlide(value) {
     document.getElementById("rangeValue").innerHTML = value;
@@ -157,6 +242,8 @@
     connection.send(JSON.stringify(msg));
     console.log(JSON.stringify(msg));
   }
+
+  /*
   function sendName() {
 
     var msg = {
@@ -181,6 +268,27 @@
       x.style.display = "none";
     }
 
+  }
+  */
+
+  function newGame() {
+    document.getElementById("end").classList.add("hidden");
+    var msg = {
+      event: "NEW",
+      playerID: playerID,
+      name: name
+    };
+    connection.send(JSON.stringify(msg));
+  }
+
+  function endGame() {
+    document.getElementById("end").classList.add("hidden");
+    var msg = {
+      event: "END",
+      playerID: playerID,
+      name: name
+    };
+    connection.send(JSON.stringify(msg));
   }
 
   // when stand is chosen, prompt the user to click and choose on which cards to discard, if none, just click confirm
@@ -211,6 +319,31 @@
     return;
   }
 
+  function draw() {
+    let draw = [];
+    let j = 0;
+    for (let i = 0; i < 5; i++) {
+      if (document.getElementById("c"+(i+1)).checked) {
+        draw[j] = document.getElementById("c"+(i+1)).value;
+        j++;
+      }
+    }
+    console.log(draw);
+    var msg = {
+      event: "DRAW",
+      playerID: playerID,
+      name: name,
+      discard: draw
+    };
+    connection.send(JSON.stringify(msg));
+    for (let i = 1; i < 6; i++) {
+      document.getElementById("c"+(i)).classList.add("hidden");
+    }
+    document.getElementById("drawPrompt").classList.add("hidden");
+    
+    return;
+  }
+
   function bet(cond) {
     if (cond > 0) {
       var msg = {
@@ -224,6 +357,7 @@
       document.getElementById("slide").classList.add("hidden");
       document.getElementById("stand").classList.remove("hidden");
       document.getElementById("fold").classList.remove("hidden");
+      document.getElementById("actionButtons").classList.add("hidden");
       return;
     }
     else if (cond == 0) {
@@ -276,4 +410,11 @@
     document.getElementById("slide").classList.add("hidden");
   }
 
+/*
+
+ TODO implement the choosing cards to discard and draw new ones
+
+*/
+
 </script>
+
