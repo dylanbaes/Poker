@@ -40,49 +40,60 @@
     -->
   </div>
 
-  <div id="cards">
-    <img id="card1" src="1J.svg" style="width:auto;">
-    <input type="checkbox" id="c1" value="1" class="hidden">
-    <label for="c1">Card 1</label>
-    <img id="card2" src="1J.svg" style="width:auto;">
-    <input type="checkbox" id="c2" value="2" class="hidden">
-    <label for="c2">Card 2</label>
-    <img id="card3" src="1J.svg" style="width:auto;">
-    <input type="checkbox" id="c3" value="3" class="hidden">
-    <label for="c3">Card 3</label>
-    <img id="card4" src="1J.svg" style="width:auto;">
-    <input type="checkbox" id="c4" value="4" class="hidden">
-    <label for="c4">Card 4</label>
-    <img id="card5" src="1J.svg" style="width:auto;">
-    <input type="checkbox" id="c5" value="5" class="hidden">
-    <label for="c5">Card 5</label>
+  <div id = "waitView">
+
   </div>
 
-  <div id="actionButtons" class="hidden">
-    <button id="stand" onclick="stand(0)">Stand</button>
-    <button id="bet" onclick="bet(0)">Bet</button>
-    <button id="fold" onclick="fold(0)">Fold</button>
-  </div>
-  <div id="standPrompt" class="hidden">
-    <button id="Confirm" onclick="stand(1)">Confirm</button>
-    <button id="Cancel" onclick="stand(-1)">Cancel</button>
-  </div>
-  <div id="foldPrompt" class="hidden">
-    <button id="Confirm" onclick="fold(1)">Confirm</button>
-    <button id="Cancel" onclick="fold(-1)">Cancel</button>
-  </div>
-  <div id="slide" class="hidden">
-    <span id="rangeValue">1</span>
-    <input type="range" id="slider" min="1" max="100" value="0" class="slider" id="myRange" onchange="rangeSlide(this.value)" onmousemove="rangeSlide(this.value)">
-    <button id="confirm" onclick="bet(slider.value)">Confirm</button>
-    <button id="cancel" onclick="bet(-1)">Cancel</button>
-  </div>
-  <div id="drawPrompt" class="hidden">
-    <button id="Confirm" onclick="draw()">Confirm</button>
+  <div id = "gameView">
+    <div id="cards">
+      <img id="card1" src="1J.svg" style="width:auto;">
+      <input type="checkbox" id="c1" value="1" class="hidden">
+      <label for="c1">Card 1</label>
+      <img id="card2" src="1J.svg" style="width:auto;">
+      <input type="checkbox" id="c2" value="2" class="hidden">
+      <label for="c2">Card 2</label>
+      <img id="card3" src="1J.svg" style="width:auto;">
+      <input type="checkbox" id="c3" value="3" class="hidden">
+      <label for="c3">Card 3</label>
+      <img id="card4" src="1J.svg" style="width:auto;">
+      <input type="checkbox" id="c4" value="4" class="hidden">
+      <label for="c4">Card 4</label>
+      <img id="card5" src="1J.svg" style="width:auto;">
+      <input type="checkbox" id="c5" value="5" class="hidden">
+      <label for="c5">Card 5</label>
+    </div>
+
+    <div id="actionButtons" class="hidden">
+      <button id="stand" onclick="stand(0)">Stand</button>
+      <button id="bet" onclick="bet(0)">Bet</button>
+      <button id="fold" onclick="fold(0)">Fold</button>
+    </div>
+    <div id="standPrompt" class="hidden">
+      <button id="Confirm" onclick="stand(1)">Confirm</button>
+      <button id="Cancel" onclick="stand(-1)">Cancel</button>
+    </div>
+    <div id="foldPrompt" class="hidden">
+      <button id="Confirm" onclick="fold(1)">Confirm</button>
+      <button id="Cancel" onclick="fold(-1)">Cancel</button>
+    </div>
+    <div id="slide" class="hidden">
+      <span id="rangeValue">1</span>
+      <input type="range" id="slider" min="1" max="100" value="0" class="slider" id="myRange" onchange="rangeSlide(this.value)" onmousemove="rangeSlide(this.value)">
+      <button id="confirm" onclick="bet(slider.value)">Confirm</button>
+      <button id="cancel" onclick="bet(-1)">Cancel</button>
+    </div>
+    <div id="drawPrompt" class="hidden">
+      <button id="Confirm" onclick="draw()">Confirm</button>
+    </div>
+
+    <div id="textbox" class="hidden"></div>
+    <div id="roundDisplay"></div>
   </div>
 
-  <div id="textbox" class="hidden"></div>
-  <div id="roundDisplay"></div>
+  <div id="endView">
+    
+  </div>
+
 </body>
 
 </html>
