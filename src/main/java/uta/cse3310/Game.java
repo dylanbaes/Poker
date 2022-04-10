@@ -16,6 +16,7 @@ public class Game {
     int turn = 0; // player ID that has the current turn
     int round_num = 1;
     int winner_id = -1;
+    ArrayList<Integer> whoDrew = new ArrayList<>();
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
@@ -89,6 +90,10 @@ public class Game {
             }
             */
             players.get(event.playerID).Cards = players.get(event.playerID).draw(players.get(event.playerID).Cards, event.discard);
+            if(event.discard.length!=0)
+            {
+                whoDrew.add(event.playerID+1);
+            }
             /*
             System.out.println("After = ");
             for (int k = 0; k < 5; k++) {

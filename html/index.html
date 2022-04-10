@@ -219,6 +219,14 @@
           }
           else if (obj.turn == playerID) {
             document.getElementById("actionButtons").classList.remove("hidden");
+            if(!obj.whoDrew.length)
+            {
+              alert("No one discarded");
+            }
+            else
+            {
+              alert("Player IDs who discarded: " + obj.whoDrew);
+            }
           }
           break;
         case 4:
