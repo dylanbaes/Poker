@@ -40,6 +40,10 @@
     -->
   </div>
 
+  <h1 id="pot" class="hidden">
+    Current Pot: 0
+  </h1>
+
   <h1 id="timer" class="hidden">
     0:30
   </h1>
@@ -122,6 +126,7 @@
   var t;
   var timer_sec;
   var timer_total;
+  var first_turn = true;
 
   connection.onmessage = function (evt) {
     var msg;
@@ -160,6 +165,7 @@
         return;
       } 
       else if (obj.players.length > 1 && start == 0) {
+        document.getElementById("pot").classList.remove("hidden");
         document.getElementById("cards").classList.remove("hidden");
         document.getElementById("waiting").classList.add("hidden");
         start++;
@@ -207,8 +213,9 @@
           stand(1);
         }
       }
-      // Keep switching turns to make actions until rounds reach round 4 which is the showdown round
       document.getElementById("slider").max = obj.money[playerID];
+      document.getElementById("pot").innerText = "Current Pot: " + obj.pot;
+      // Keep switching turns to make actions until rounds reach round 4 which is the showdown round
       switch (obj.round_num) {
         case 1:
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #1";
@@ -222,6 +229,7 @@
             connection.send(JSON.stringify(msg));
             console.log(msg);
             document.getElementById("end").classList.remove("hidden");
+            document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
@@ -263,6 +271,7 @@
             connection.send(JSON.stringify(msg));
             console.log(msg);
             document.getElementById("end").classList.remove("hidden");
+            document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
@@ -291,6 +300,7 @@
             connection.send(JSON.stringify(msg));
             console.log(msg);
             document.getElementById("end").classList.remove("hidden");
+            document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
@@ -330,6 +340,7 @@
             document.getElementById("roundDisplay").classList.add("hidden");
           }
           document.getElementById("end").classList.remove("hidden");
+          document.getElementById("pot").classList.add("hidden");
           document.getElementById("cards").classList.add("hidden");
           break;
         default:
@@ -412,8 +423,15 @@
     else if (cond == -1) {
       document.getElementById("standPrompt").classList.add("hidden");
       document.getElementById("bet").classList.remove("hidden");
-      document.getElementById("fold").classList.remove("hidden");
+      if(!first_turn)
+      {
+        document.getElementById("fold").classList.remove("hidden");
+      }
     } else {
+      if(first_turn)
+      {
+        first_turn = false;
+      }
       clearTimeout(timer_total);
       clearInterval(timer_sec);
       document.getElementById("timer").classList.add("hidden");
@@ -463,6 +481,10 @@
 
   function bet(cond) {
     if (cond > 0) {
+      if(first_turn)
+      {
+        first_turn = false;
+      }
       clearTimeout(timer_total);
       clearInterval(timer_sec);
       document.getElementById("timer").classList.add("hidden");
@@ -490,7 +512,10 @@
     else if (cond == -1) {
       document.getElementById("slide").classList.add("hidden");
       document.getElementById("stand").classList.remove("hidden");
-      document.getElementById("fold").classList.remove("hidden");
+      if(!first_turn)
+      {
+        document.getElementById("fold").classList.remove("hidden");
+      }
       return;
     }
     
