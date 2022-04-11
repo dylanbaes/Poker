@@ -40,6 +40,10 @@
     -->
   </div>
 
+  <h1 id="winnings" class="hidden">
+    Winnings: 0
+  </h1>
+
   <h1 id="pot" class="hidden">
     Current Pot: 0
   </h1>
@@ -228,6 +232,11 @@
             };
             connection.send(JSON.stringify(msg));
             console.log(msg);
+            if(playerID == obj.winner_id)
+            {
+              document.getElementById("winnings").innerText = "Winnings: " + obj.pot;
+            }
+            document.getElementById("winnings").classList.remove("hidden");
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
@@ -270,6 +279,11 @@
             };
             connection.send(JSON.stringify(msg));
             console.log(msg);
+            if(playerID == obj.winner_id)
+            {
+              document.getElementById("winnings").innerText = "Winnings: " + obj.pot;
+            }
+            document.getElementById("winnings").classList.remove("hidden");
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
@@ -299,6 +313,11 @@
             };
             connection.send(JSON.stringify(msg));
             console.log(msg);
+            if(playerID == obj.winner_id)
+            {
+              document.getElementById("winnings").innerText = "Winnings: " + obj.pot;
+            }
+            document.getElementById("winnings").classList.remove("hidden");
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("pot").classList.add("hidden");
             document.getElementById("cards").classList.add("hidden");
@@ -336,6 +355,11 @@
             };
             connection.send(JSON.stringify(msg));
             console.log(msg);
+            if(playerID == obj.winner_id)
+            {
+              document.getElementById("winnings").innerText = "Winnings: " + obj.pot;
+            }
+            document.getElementById("winnings").classList.remove("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
           }
