@@ -208,12 +208,19 @@
         }
       }
       // Keep switching turns to make actions until rounds reach round 4 which is the showdown round
+      document.getElementById("slider").max = obj.money[playerID];
       switch (obj.round_num) {
         case 1:
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #1";
           if (obj.winner_id != -1)
           {
-            alert("Player " + (obj.winner_id+1) + " Won!");
+            alert("Player #" + (obj.winner_id+1) + " Won!");
+            var msg = {
+              event: "WIN",
+              playerID: obj.winner_id
+            };
+            connection.send(JSON.stringify(msg));
+            console.log(msg);
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
@@ -221,6 +228,10 @@
           }
           else if (obj.turn == playerID && obj.round_num == 1 && obj.turn == 0) {
             document.getElementById("actionButtons").classList.remove("hidden");
+            if(!obj.money[playerID])
+            {
+              document.getElementById("bet").classList.add("hidden");
+            }
             document.getElementById("fold").classList.add("hidden");
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
@@ -229,6 +240,10 @@
           }
           else if (obj.turn == playerID) {
             document.getElementById("actionButtons").classList.remove("hidden");
+            if(!obj.money[playerID])
+            {
+              document.getElementById("bet").classList.add("hidden");
+            }
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
             timer_sec = setInterval(t_sec,1000);
@@ -240,7 +255,13 @@
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nDraw Round\nPlease check the cards that you would like to discard"; // Draw Round
           if (obj.winner_id != -1)
           {
-            alert("Player " + (obj.winner_id+1) + " Won!");
+            alert("Player #" + (obj.winner_id+1) + " Won!");
+            var msg = {
+              event: "WIN",
+              playerID: obj.winner_id
+            };
+            connection.send(JSON.stringify(msg));
+            console.log(msg);
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
@@ -262,7 +283,13 @@
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round";
           if (obj.winner_id != -1)
           {
-            alert("Player " + (obj.winner_id+1) + " Won!");
+            alert("Player #" + (obj.winner_id+1) + " Won!");
+            var msg = {
+              event: "WIN",
+              playerID: obj.winner_id
+            };
+            connection.send(JSON.stringify(msg));
+            console.log(msg);
             document.getElementById("end").classList.remove("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
@@ -278,6 +305,10 @@
             {
               alert("Player IDs who discarded: " + obj.whoDrew);
             }
+            if(!obj.money[playerID])
+            {
+              document.getElementById("bet").classList.add("hidden");
+            }
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
             timer_sec = setInterval(t_sec,1000);
@@ -289,6 +320,12 @@
           if (obj.winner_id != -1)
           {
             alert("Player #" + (obj.winner_id+1) + " Won!");
+            var msg = {
+              event: "WIN",
+              playerID: obj.winner_id
+            };
+            connection.send(JSON.stringify(msg));
+            console.log(msg);
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
           }
@@ -426,11 +463,14 @@
 
   function bet(cond) {
     if (cond > 0) {
+      clearTimeout(timer_total);
+      clearInterval(timer_sec);
+      document.getElementById("timer").classList.add("hidden");
       var msg = {
         event: "BET",
-        amount: cond,
         playerID: playerID,
-        name: name
+        name: name,
+        amount: cond
       };
       connection.send(JSON.stringify(msg));
       console.log(msg);
@@ -470,6 +510,9 @@
       document.getElementById("bet").classList.remove("hidden");
     }
     else {
+      clearTimeout(timer_total);
+      clearInterval(timer_sec);
+      document.getElementById("timer").classList.add("hidden");
       var msg = {
         event: "FOLD",
         playerID: playerID,

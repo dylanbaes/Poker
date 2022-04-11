@@ -17,6 +17,8 @@ public class Game {
     int round_num = 1;
     int winner_id = -1;
     ArrayList<Integer> whoDrew = new ArrayList<>();
+    int[] money = {100,100,100,100,100};
+    int pot = 0;
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
@@ -104,8 +106,12 @@ public class Game {
             // the message should have sent the indexes of cards to be discarded and the player that sent the message
         }
         else if (event.event == UserEventType.BET) {
-            // not implemented for iteration 1 so there is only folding and standing for now
-            // this does not count as a turn
+            pot = pot + event.amount;
+            money[event.playerID] = money[event.playerID] - event.amount;
+        }
+        else if(event.event == UserEventType.WIN)
+        {
+            money[event.playerID] = money[event.playerID] + pot;
         }
         turn++;
         if (turn > players.size() - 1) {
