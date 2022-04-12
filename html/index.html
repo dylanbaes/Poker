@@ -586,5 +586,15 @@
     console.log(msg);
   }
 
+  function lost() {
+    var msg = {
+      event: "LOST",
+      playerID: playerID,
+      name: name
+    };
+    connection.send(JSON.stringify(msg));
+    console.log(msg);
+  }
+
 </script>
 

@@ -20,7 +20,7 @@ public class Game {
     ArrayList<Integer> whoDrew = new ArrayList<>();
     int[] money = {100,100,100,100,100};
     int pot = 0;
-    private transient int seconds;
+    int losers = 0;
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
@@ -81,35 +81,25 @@ public class Game {
         }
         else if (event.event == UserEventType.FOLD) {
             players.get(event.playerID).lose();
-            for (int i = 0; i < players.size(); i++) {
-                if (i!=event.playerID) {
-                    players.get(i).win=true;
-                    winner_id=i;
-                    return;
-                }
+            losers++;
+            if (losers == players.size()-1) {
+                for (int i = 0; i < players.size(); i++) {
+                    if (!players.get(i).lose) {
+                        players.get(i).win=true;
+                        winner_id=i;
+                        return;
+                    }
             }
-            // if the player folds, the other player wins
+            
+            }
+            // if the player folds, take them out of the game and should not be able to make moves anymore
         } 
         else if (event.event == UserEventType.DRAW) {
-            /*
-            System.out.println("Before = ");
-            for (int k = 0; k < 5; k++) {
-                System.out.println(players.get(event.playerID).CardId[k]);
-            }
-            */
             players.get(event.playerID).Cards = players.get(event.playerID).draw(players.get(event.playerID).Cards, event.discard);
             if(event.discard.length!=0)
             {
                 whoDrew.add(event.playerID+1);
             }
-            /*
-            System.out.println("After = ");
-            for (int k = 0; k < 5; k++) {
-                System.out.println(players.get(event.playerID).CardId[k]);
-            }
-            */
-            // if the player draws, they get a choice which cards to discard and draw new ones for
-            // the message should have sent the indexes of cards to be discarded and the player that sent the message
         }
         else if (event.event == UserEventType.BET) {
             pot = pot + event.amount;
