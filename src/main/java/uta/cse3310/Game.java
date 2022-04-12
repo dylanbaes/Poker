@@ -118,6 +118,8 @@ public class Game {
         else if(event.event == UserEventType.WIN)
         {
             money[event.playerID] = money[event.playerID] + pot;
+            round_num = 5;
+            winner_id = -1;
         }
         turn++;
         if (turn > players.size() - 1) {
