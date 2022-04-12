@@ -2,9 +2,13 @@ package uta.cse3310;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import uta.cse3310.UserEvent.UserEventType;
+
 import java.util.*;
 
 public class Player extends Card {
+    public static int readyUp = 0;
     boolean ready = false;
     int Id;
     String Name;
@@ -69,6 +73,31 @@ public class Player extends Card {
             }
         }
         return cards;
+    }
+
+    // To implement the ready up functionality, when there are more than one player in the lobby, let the clients get to the ready stage
+    // if the readyUp integer == numPlayers, then create a new Game and start as usual
+
+    public static void processReady(String msg) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        UserEvent event = gson.fromJson(msg, UserEvent.class);
+
+        if (event.event == UserEventType.READY) {
+            readyUp++;
+        }
+
+        if (event.event == UserEventType.NOTREADY) {
+            readyUp--;
+        }
+    }
+
+    public void readyUp() {
+        this.ready = true;
+    }
+
+    public void readyNo() {
+        this.ready = false;
     }
 
     public void win() {

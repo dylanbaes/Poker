@@ -50,6 +50,18 @@ public class WebPoker extends WebSocketServer {
     // Since this is a new connection, it is also a new player
     numPlayers = numPlayers + 1; // player id's start at 0
     Player player = new Player(numPlayers);
+    /*
+      TODO: 
+        How I am trying to implement the new game functionality is there is a waiting and ready room, which is already implemented
+        Once there is more than one player in a lobby, the game switches from the waiting room to the ready room where each player can declare if they are ready
+        This then enters a while loop that processes the number of players that are ready which is determine by player.readyUp
+        If player.readyUp == this.numPlayers, then create a new Game etc etc
+        
+        The transition from waiting room to ready room is determined by whether there is more than one player in the lobby, which should be communicated from the server to the client only when it happens
+
+      ALTERNATIVE:
+        There is one initial game that is created, which is already written in this code.. but can a game object, instantiate itself when we are trying to create a new game.
+    */
     if (numPlayers == 0) {
       System.out.println("starting a new game");
       game = new Game();
@@ -97,11 +109,22 @@ public class WebPoker extends WebSocketServer {
 
     synchronized (mutex) {
       // all incoming messages are processed by the game
-      game.processMessage(message);
-      // and the results of that message are sent to everyone
-      // as the "state of the game"
+      if (game.start == 0) {
+        Player.processReady(message);
+        if(Player.readyUp == game.players.size()) {
+          game.start = 1;
+          System.out.println("Game has started");
+          broadcast(game.exportStateAsJSON());
+        }
+        System.out.println(Player.readyUp);
+      } else {
+        game.processMessage(message);
+        // and the results of that message are sent to everyone
+        // as the "state of the game"
 
-      broadcast(game.exportStateAsJSON());
+        broadcast(game.exportStateAsJSON());
+      }
+      
     }
     System.out.println(conn + ": " + message);
   }

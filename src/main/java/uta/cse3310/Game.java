@@ -13,12 +13,14 @@ import uta.cse3310.*;
 public class Game {
 
     ArrayList<Player> players = new ArrayList<>();
+    public int start = 0;
     int turn = 0; // player ID that has the current turn
     int round_num = 1;
     int winner_id = -1;
     ArrayList<Integer> whoDrew = new ArrayList<>();
     int[] money = {100,100,100,100,100};
     int pot = 0;
+    private transient int seconds;
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
@@ -48,6 +50,9 @@ public class Game {
     }
 
     public void newGame() {
+        Game g = new Game();
+        g.exportStateAsJSON();
+        /*
         turn = 0;
         round_num = 0;
         winner_id = -1;
@@ -56,6 +61,7 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discard);
         }
+        */
     }
 
     public void quit () {
@@ -143,7 +149,7 @@ public class Game {
         }
         else if (round_num > 4) {
             if(event.event == UserEventType.END) {
-                // end the game
+                round_num = 5;
             }
             else if (event.event == UserEventType.NEW) {
                 newGame();
@@ -179,9 +185,22 @@ public class Game {
         // this function is called on a periodic basis (once a second) by a timer
         // it is to allow time based situations to be handled in the game
         // if the game state is changed, it returns a true.
+        /*
+        seconds = seconds + 1;
+        if ((seconds % 10) == 0) {
+            turn = turn + 1;
+            if (turn == 5) {
+                turn = 0;
+            }
+            return true;
+        }
+        return false;
+
+        */
         return false;
         // expecting that returning a true will trigger a send of the game
         // state to everyone
+
 
     }
 
@@ -193,9 +212,9 @@ public class Game {
 }
 /*
 
-    TODO Implement how a player chooses and discards the cards in the draw round
-    TODO Implement how a player wins
-    TODO Implement that after the 4th round, it goes to a showdown
-    TODO Integrate the Hand class's is_better_than to determine winner at showdown
+    TODO Allow for more than 2 players to play
+    TODO Only create Game object when all players ready up
+    TODO Destroy Game object once the game has finished
+    TODO There is a bug of when a player folds, it still goes through all 4 rounds of just alerting who won
 
 */

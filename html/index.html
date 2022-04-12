@@ -20,9 +20,7 @@
     </p>
   </div>
   -->
-  <div id="rounds">
-
-  </div>
+  
 
   
 
@@ -32,13 +30,7 @@
     Winnings: 0
   </h1>
 
-  <h1 id="pot" class="hidden">
-    Current Pot: 0
-  </h1>
-
-  <h1 id="timer" class="hidden">
-    0:30
-  </h1>
+  
 
   <div id = "waitView">
     <div id="waiting">
@@ -46,9 +38,25 @@
         Waiting for more players...
       </h1>
     </div>
+    <div id="readyStage" class="hidden">
+      <button id="ready" onclick="ready()">Ready Up</button>
+      <button id="readyNo" onclick="readyNo()" class="hidden">Not Ready</button>
+    </div>
   </div>
 
-  <div id = "gameView">
+  <div id = "gameView" class="hidden">
+    <div id="rounds">
+
+    </div>
+
+    <h1 id="pot">
+      Current Pot: 0
+    </h1>
+  
+    <h1 id="timer" class="hidden">
+      0:30
+    </h1>
+
     <div id="cards">
       <img id="card1" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c1" value="1" class="hidden">
@@ -94,8 +102,8 @@
     <div id="roundDisplay"></div>
   </div>
 
-  <div id="endView">
-    <div id="end" class="hidden">
+  <div id="endView" class="hidden">
+    <div id="end">
       <h1>
         Thanks for playing!
       </h1>
@@ -162,17 +170,33 @@
       name = "Player " + (playerID+1);
       document.getElementById("credentials").innerHTML='ID:'+playerID+'\n'+name;
     } else {
-      document.getElementById("rounds").innerText = "It is Player " + (obj.turn+1) + "'s turn";
-      if (obj.players.length == 1 && start == 0) {
-        document.getElementById("cards").classList.add("hidden");
-        document.getElementById("actionButtons").classList.add("hidden");
+      if (obj.players.length < 2 && obj.start == 0) {
+        document.getElementById("waiting").classList.remove("hidden");
+        document.getElementById("readyStage").classList.add("hidden");
         return;
+      }
+      else if (obj.players.length > 1 && obj.start == 0) {
+        document.getElementById("waiting").classList.add("hidden");
+        document.getElementById("readyStage").classList.remove("hidden");
+        document.getElementById("gameView").classList.add("hidden");
+        return;
+      }
+      else if (obj.start == 1) {
+        document.getElementById("waitView").classList.add("hidden");
+        document.getElementById("gameView").classList.remove("hidden");
+        start = 1;
       } 
+      /*
       else if (obj.players.length > 1 && start == 0) {
         document.getElementById("pot").classList.remove("hidden");
         document.getElementById("cards").classList.remove("hidden");
         document.getElementById("waitView").classList.add("hidden");
+        document.getElementById("rounds").innerText = "It is Player " + (obj.turn+1) + "'s turn";
         start++;
+      }
+      */
+      if (start==0){
+        return;
       }
       console.log(obj.players.length);
       for (const player of obj.players) {
@@ -368,7 +392,9 @@
           document.getElementById("cards").classList.add("hidden");
           break;
         default:
-          
+          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("pot").classList.add("hidden");
+          document.getElementById("cards").classList.add("hidden");
           break;
       }
     }
@@ -428,13 +454,14 @@
   }
 
   function endGame() {
-    document.getElementById("end").classList.add("hidden");
+    document.getElementById("endView").classList.add("hidden");
     var msg = {
       event: "END",
       playerID: playerID,
       name: name
     };
     connection.send(JSON.stringify(msg));
+    start = 0;
   }
 
   // when stand is chosen, prompt the user to click and choose on which cards to discard, if none, just click confirm
@@ -582,11 +609,29 @@
     document.getElementById("slide").classList.add("hidden");
   }
 
-/*
+  function ready() {
+    document.getElementById("readyNo").classList.remove("hidden");
+    document.getElementById("ready").classList.add("hidden");
+    var msg = {
+        event: "READY",
+        playerID: playerID,
+        name: name
+    };
+    connection.send(JSON.stringify(msg));
+    console.log(msg);
+  }
 
- TODO implement the choosing cards to discard and draw new ones
-
-*/
+  function readyNo() {
+    document.getElementById("readyNo").classList.add("hidden");
+    document.getElementById("ready").classList.remove("hidden");
+    var msg = {
+        event: "NOTREADY",
+        playerID: playerID,
+        name: name
+    };
+    connection.send(JSON.stringify(msg));
+    console.log(msg);
+  }
 
 </script>
 
