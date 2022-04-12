@@ -24,24 +24,16 @@
 
   </div>
 
-  <div id="waiting">
-    <h1>
-      Waiting for more players...
-    </h1>
-  </div>
+  
 
-  <div id="end" class="hidden">
-    <h1>
-      Thanks for playing!
-    </h1>
-    <!--
-    <button id="Yes" onclick="newGame()">Yes</button>
-    <button id="No" onclick="endGame()">No</button>
-    -->
-  </div>
+  
 
   <div id = "waitView">
-
+    <div id="waiting">
+      <h1>
+        Waiting for more players...
+      </h1>
+    </div>
   </div>
 
   <div id = "gameView">
@@ -91,7 +83,15 @@
   </div>
 
   <div id="endView">
-    
+    <div id="end" class="hidden">
+      <h1>
+        Thanks for playing!
+      </h1>
+      <!--
+      <button id="Yes" onclick="newGame()">Yes</button>
+      <button id="No" onclick="endGame()">No</button>
+      -->
+    </div>
   </div>
 
 </body>
@@ -154,7 +154,7 @@
       } 
       else if (obj.players.length > 1 && start == 0) {
         document.getElementById("cards").classList.remove("hidden");
-        document.getElementById("waiting").classList.add("hidden");
+        document.getElementById("waitView").classList.add("hidden");
         start++;
       }
       console.log(obj.players.length);
@@ -212,7 +212,7 @@
           if (obj.winner_id != -1)
           {
             alert("Player " + (obj.winner_id+1) + " Won!");
-            document.getElementById("end").classList.remove("hidden");
+            document.getElementById("endView").classList.remove("hidden");
             document.getElementById("cards").classList.add("hidden");
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
@@ -225,7 +225,7 @@
             }
             else
             {
-              alert("Player IDs who discarded: " + obj.whoDrew);
+              alert("Players who discarded: " + obj.whoDrew);
             }
           }
           break;
@@ -237,7 +237,7 @@
             document.getElementById("actionButtons").classList.add("hidden");
             document.getElementById("roundDisplay").classList.add("hidden");
           }
-          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("endView").classList.remove("hidden");
           document.getElementById("cards").classList.add("hidden");
           break;
         default:

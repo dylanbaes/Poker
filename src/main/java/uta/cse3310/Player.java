@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 
 public class Player extends Card {
-    int ready = 0;
+    boolean ready = false;
     int Id;
     String Name;
     boolean win = false;
