@@ -1,6 +1,7 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +15,7 @@ public class Game {
 
     ArrayList<Player> players = new ArrayList<>();
     public int start = 0;
+    public int newgame = 0;
     int turn = 0; // player ID that has the current turn
     int round_num = 1;
     int winner_id = -1;
@@ -21,6 +23,27 @@ public class Game {
     int[] money = {100,100,100,100,100};
     int pot = 0;
     int losers = 0;
+
+    public Game() {
+        System.out.println("creating a Game Object");
+        Player.readyUp = 0;
+        start = 0;
+        newgame = 0;
+        turn = 0;
+        round_num = 1;
+        winner_id = -1;
+        whoDrew = new ArrayList<>();
+        pot = 0;
+        losers = 0;
+        Player.pile = new HashMap<>();
+    }
+
+    public void deal() {
+        int[] discards = {1,2,3,4,5};
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discards);
+        }
+    }
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
@@ -37,35 +60,8 @@ public class Game {
         // and does whatever else is needed to remove
         // the player from the game.
         System.out.println(playerid +" has been removed");
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).Id!=playerid) {
-                players.get(i).win = true;
-                winner_id = i;
-                System.out.println("winner id set to " + winner_id);
-            } else {
-                players.get(i).lose = true;
-            }
-        }
+        players.get(playerid).lose = true;
         players.remove(playerid);
-    }
-
-    public void newGame() {
-        Game g = new Game();
-        g.exportStateAsJSON();
-        /*
-        turn = 0;
-        round_num = 0;
-        winner_id = -1;
-        players.get(0).newPile();
-        int[] discard = {0,1,2,3,4};
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discard);
-        }
-        */
-    }
-
-    public void quit () {
-
     }
 
     public void processMessage(String msg) {
@@ -75,7 +71,9 @@ public class Game {
         // take the string we just received, and turn it into a user event
         UserEvent event = gson.fromJson(msg, UserEvent.class);
         //int count_losses = 0;
-
+        if(event.event == UserEventType.END) {
+            round_num = 5;
+        }
         if (event.event == UserEventType.NAME) {
             players.get(event.playerID).SetName(event.name);
         }
@@ -105,13 +103,21 @@ public class Game {
             pot = pot + event.amount;
             money[event.playerID] = money[event.playerID] - event.amount;
         }
-        else if(event.event == UserEventType.WIN)
+        if(event.event == UserEventType.WIN)
         {
             money[event.playerID] = money[event.playerID] + pot;
             round_num = 5;
-            winner_id = -1;
+            return;
         }
-        turn++;
+        else
+        {
+            turn++;
+        }
+        /*
+        if (players.get(turn).lose) {
+            turn++;
+        }
+        */
         if (turn > players.size() - 1) {
             turn = 0;
             round_num += 1;
@@ -144,7 +150,7 @@ public class Game {
                 round_num = 5;
             }
             else if (event.event == UserEventType.NEW) {
-                newGame();
+                newgame = 1;
             }
         }
         /*
@@ -189,6 +195,10 @@ public class Game {
         return false;
 
         */
+        if (this.newgame == 1) {
+            return true;
+        }
+
         return false;
         // expecting that returning a true will trigger a send of the game
         // state to everyone
@@ -196,9 +206,7 @@ public class Game {
 
     }
 
-    public Game() {
-        System.out.println("creating a Game Object");
-    }
+    
     
 
 }

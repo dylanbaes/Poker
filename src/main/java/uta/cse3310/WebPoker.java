@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -109,15 +110,23 @@ public class WebPoker extends WebSocketServer {
 
     synchronized (mutex) {
       // all incoming messages are processed by the game
-      if (game.start == 0) {
+      if (game.start == 0 && game.newgame == 0) {
         Player.processReady(message);
         if(Player.readyUp == game.players.size()) {
           game.start = 1;
           System.out.println("Game has started");
           broadcast(game.exportStateAsJSON());
         }
-        System.out.println(Player.readyUp);
-      } else {
+        //System.out.println(Player.readyUp);
+      } /*else if (game.start == 1 && game.newgame == 1) { // If the game has started and finished and a new game is being requested
+        ArrayList<Player> oldplayers = game.players;
+        game = new Game();
+        game.players = oldplayers;
+        System.out.println("A new game has been started");
+        broadcast(game.exportStateAsJSON());
+      } 
+      */
+      else {
         game.processMessage(message);
         // and the results of that message are sent to everyone
         // as the "state of the game"
@@ -145,7 +154,12 @@ public class WebPoker extends WebSocketServer {
         synchronized (mutex) {
         }
         if (game.update()) {
-
+          ArrayList<Player> oldplayers = game.players;
+          game = new Game();
+          game.players = oldplayers;
+          game.deal();
+          System.out.println("A new game has been started");
+          System.out.println(game.start);
           broadcast(game.exportStateAsJSON());
         }
       }

@@ -26,9 +26,7 @@
 
   
 
-  <h1 id="winnings" class="hidden">
-    Winnings: 0
-  </h1>
+  
 
   
 
@@ -107,6 +105,10 @@
       <h1>
         Thanks for playing!
       </h1>
+      <h2 id="winnings">
+        Winnings: 0
+      </h2>
+      <button id="newgame" onclick="newGame()">Play Again</button>
       <!--
       <button id="Yes" onclick="newGame()">Yes</button>
       <button id="No" onclick="endGame()">No</button>
@@ -156,8 +158,8 @@
 
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
+    
     if (!obj.players) {
-
       playerID = obj.Id;
       console.log("player ID = " + playerID);
       for (let i = 0; i < 5; i++) {
@@ -170,21 +172,44 @@
       }
       name = "Player " + (playerID+1);
       document.getElementById("credentials").innerHTML='ID:'+playerID+'\n'+name;
-    } else {
+    } 
+    else 
+    {
+      
+      if (obj.start == 0) 
+      {
+        document.getElementById("waitView").classList.remove("hidden");
+        document.getElementById("ready").classList.remove("hidden");
+        document.getElementById("readyNo").classList.add("hidden");
+      }
       if (obj.players.length < 2 && obj.start == 0) {
         document.getElementById("waiting").classList.remove("hidden");
         document.getElementById("readyStage").classList.add("hidden");
+        document.getElementById("endView").classList.add("hidden");
         return;
       }
       else if (obj.players.length > 1 && obj.start == 0) {
         document.getElementById("waiting").classList.add("hidden");
         document.getElementById("readyStage").classList.remove("hidden");
         document.getElementById("gameView").classList.add("hidden");
+        document.getElementById("endView").classList.add("hidden");
         return;
       }
       else if (obj.start == 1) {
+        console.log("HI\n");
+        for (const player of obj.players) {
+          if (playerID == player.Id) {
+            for (let i = 0; i < 5; i++) {
+              var filename = player.CardId[i]+".svg";
+              //console.log("changing " + document.getElementById(cardI[i]).src + " to " + filename);
+              document.getElementById(cardI[i]).src=filename;
+            }
+          }
+        }
         document.getElementById("waitView").classList.add("hidden");
         document.getElementById("gameView").classList.remove("hidden");
+        document.getElementById("cards").classList.remove("hidden");
+        document.getElementById("endView").classList.add("hidden");
         start = 1;
       } 
       /*
@@ -200,15 +225,7 @@
         return;
       }
       console.log(obj.players.length);
-      for (const player of obj.players) {
-        if (playerID == player.Id) {
-          for (let i = 0; i < 5; i++) {
-            var filename = player.CardId[i]+".svg";
-            //console.log("changing " + document.getElementById(cardI[i]).src + " to " + filename);
-            document.getElementById(cardI[i]).src=filename;
-          }
-        }
-      }
+      
       console.log("player ID = " + playerID + " turn = " + obj.turn);
       function t_sec()
       {
@@ -267,7 +284,7 @@
         }
         winner_processed = true;
         document.getElementById("winnings").classList.remove("hidden");
-        document.getElementById("end").classList.remove("hidden");
+        document.getElementById("endView").classList.remove("hidden");
         document.getElementById("pot").classList.add("hidden");
         document.getElementById("cards").classList.add("hidden");
         document.getElementById("actionButtons").classList.add("hidden");
@@ -340,12 +357,12 @@
           break;
         case 4:
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nShowdown Round"; // Showdown Round
-          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("endView").classList.remove("hidden");
           document.getElementById("pot").classList.add("hidden");
           document.getElementById("cards").classList.add("hidden");
           break;
         default:
-          document.getElementById("end").classList.remove("hidden");
+          document.getElementById("endView").classList.remove("hidden");
           document.getElementById("pot").classList.add("hidden");
           document.getElementById("cards").classList.add("hidden");
           break;
@@ -397,13 +414,18 @@
   */
 
   function newGame() {
-    document.getElementById("end").classList.add("hidden");
+    document.getElementById("endView").classList.add("hidden");
     var msg = {
       event: "NEW",
       playerID: playerID,
       name: name
     };
+    start = 0;
     connection.send(JSON.stringify(msg));
+    var cardIdx = 0;
+    var playerID = 0;
+    var first_turn = true;
+    var winner_processed = false;
   }
 
   function endGame() {
