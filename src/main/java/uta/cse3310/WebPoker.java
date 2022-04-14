@@ -157,6 +157,9 @@ public class WebPoker extends WebSocketServer {
           ArrayList<Player> oldplayers = game.players;
           game = new Game();
           game.players = oldplayers;
+          for (int i = 0; i < game.players.size(); i++) {
+            game.players.get(i).reset();
+          }
           game.deal();
           System.out.println("A new game has been started");
           System.out.println(game.start);

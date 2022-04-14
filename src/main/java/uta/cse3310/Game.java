@@ -79,8 +79,10 @@ public class Game {
         }
         else if (event.event == UserEventType.FOLD) {
             players.get(event.playerID).lose();
+            System.out.println(event.playerID + " folded");
             losers++;
             if (losers == players.size()-1) {
+                System.out.println("Someone won");
                 for (int i = 0; i < players.size(); i++) {
                     if (!players.get(i).lose) {
                         players.get(i).win=true;

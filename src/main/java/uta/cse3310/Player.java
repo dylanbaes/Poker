@@ -92,6 +92,11 @@ public class Player extends Card {
         }
     }
 
+    public void reset() {
+        win = false;
+        lose = false;
+    }
+
     public void readyUp() {
         this.ready = true;
     }
