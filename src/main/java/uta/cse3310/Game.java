@@ -82,12 +82,12 @@ public class Game {
             System.out.println(event.playerID + " folded");
             losers++;
             if (losers == players.size()-1) {
-                System.out.println("Someone won");
+                
                 for (int i = 0; i < players.size(); i++) {
                     if (!players.get(i).lose) {
                         players.get(i).win=true;
                         winner_id=i;
-                        return;
+                        System.out.println((winner_id+1) + " Won");
                     }
             }
             

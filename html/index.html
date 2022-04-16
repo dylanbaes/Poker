@@ -175,12 +175,14 @@
     } 
     else 
     {
-      
       if (obj.start == 0) 
       {
         document.getElementById("waitView").classList.remove("hidden");
         document.getElementById("ready").classList.remove("hidden");
         document.getElementById("readyNo").classList.add("hidden");
+        winner_processed = false;
+        winner_id = -1;
+        
       }
       if (obj.players.length < 2 && obj.start == 0) {
         document.getElementById("waiting").classList.remove("hidden");
@@ -196,7 +198,6 @@
         return;
       }
       else if (obj.start == 1) {
-        console.log("HI\n");
         for (const player of obj.players) {
           if (playerID == player.Id) {
             for (let i = 0; i < 5; i++) {
@@ -422,10 +423,11 @@
     };
     start = 0;
     connection.send(JSON.stringify(msg));
-    var cardIdx = 0;
-    var playerID = 0;
-    var first_turn = true;
-    var winner_processed = false;
+    cardIdx = 0;
+    playerID = 0;
+    first_turn = true;
+    winner_processed = false;
+    winner_id = -1;
   }
 
   function endGame() {

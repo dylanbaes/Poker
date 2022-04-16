@@ -23,7 +23,6 @@ public class Player extends Card {
     public Player(int id)  {
         Id = id;
         Name = "not set";
-
         Cards = new Card[5];
         int set = 0;
         // dealing implementation that makes sure that specific card has not been dealt already
@@ -93,6 +92,7 @@ public class Player extends Card {
     }
 
     public void reset() {
+        ready = false;
         win = false;
         lose = false;
     }
