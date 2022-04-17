@@ -11,6 +11,11 @@ import uta.cse3310.*;
 
 // mvn exec:java -Dexec.mainClass=uta.cse3310.WebPoker
 
+
+/*
+For players that fold, they cannot make any more turns.
+For players that leave, default them to a fold.
+*/
 public class Game {
 
     ArrayList<Player> players = new ArrayList<>();
@@ -114,6 +119,7 @@ public class Game {
         else
         {
             turn++;
+            
         }
         /*
         if (players.get(turn).lose) {
@@ -123,6 +129,9 @@ public class Game {
         if (turn > players.size() - 1) {
             turn = 0;
             round_num += 1;
+        }
+        if (players.get(turn).lose) {
+            turn++;
         }
         if (round_num==2) {
             //It is draw round and we need to discard and draw new cards for each user if they choose to

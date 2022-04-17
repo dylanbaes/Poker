@@ -100,6 +100,12 @@
     <div id="roundDisplay"></div>
   </div>
 
+  <div id="loseView" class="hidden">
+    <h1>
+      You lost...
+    </h1>
+  </div>
+
   <div id="endView" class="hidden">
     <div id="end">
       <h1>
@@ -211,6 +217,7 @@
         document.getElementById("gameView").classList.remove("hidden");
         document.getElementById("cards").classList.remove("hidden");
         document.getElementById("endView").classList.add("hidden");
+        document.getElementById("loseView").classList.add("hidden");
         start = 1;
       } 
       /*
@@ -228,6 +235,14 @@
       console.log(obj.players.length);
       
       console.log("player ID = " + playerID + " turn = " + obj.turn);
+      for (const player of obj.players) {
+        if (playerID == player.Id && player.lose == true) {
+          document.getElementById("gameView").classList.add("hidden");
+          document.getElementById("endView").classList.remove("hidden");
+          document.getElementById("loseView").classList.remove("hidden");
+          return;
+        }
+      }
       function t_sec()
       {
         if(t >= 0)
