@@ -213,6 +213,7 @@
             }
           }
         }
+        document.getElementById("pot").classList.remove("hidden");
         document.getElementById("waitView").classList.add("hidden");
         document.getElementById("gameView").classList.remove("hidden");
         document.getElementById("cards").classList.remove("hidden");
@@ -437,12 +438,11 @@
       name: name
     };
     start = 0;
-    connection.send(JSON.stringify(msg));
     cardIdx = 0;
-    playerID = 0;
     first_turn = true;
     winner_processed = false;
     winner_id = -1;
+    connection.send(JSON.stringify(msg));
   }
 
   function endGame() {
