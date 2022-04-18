@@ -104,6 +104,7 @@ public class WebPoker extends WebSocketServer {
         if(Player.readyUp == game.players.size()) {
           game.start = 1;
           System.out.println("Game has started");
+          game.deal();
           broadcast(game.exportStateAsJSON());
         }
         //System.out.println(Player.readyUp);

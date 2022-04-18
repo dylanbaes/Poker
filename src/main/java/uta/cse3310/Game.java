@@ -28,6 +28,7 @@ public class Game {
     int[] money = {100,100,100,100,100};
     int pot = 0;
     int losers = 0;
+    public static HashMap<Integer, Integer> pile = new HashMap<>();
 
     public Game() {
         System.out.println("creating a Game Object");
@@ -40,14 +41,60 @@ public class Game {
         whoDrew = new ArrayList<>();
         pot = 0;
         losers = 0;
-        Player.pile = new HashMap<>();
+        pile = new HashMap<>();
     }
 
     public void deal() {
+        int set = 0;
+        for (int p = 0; p < players.size(); p++) {
+            for (int i = 0; i < 5; i++) {
+                set = 0;
+                while (set == 0) {
+                    players.get(p).Cards[i] = new Card();
+                    players.get(p).Cards[i].suite = Card.Suite.randomSuite();
+                    players.get(p).Cards[i].value = Card.Value.randomValue();
+                    if (!pile.containsKey(players.get(p).Cards[i].suite.val+players.get(p).Cards[i].value.val)) {
+                        pile.put(players.get(p).Cards[i].suite.val+players.get(p).Cards[i].value.val, 1);
+                        players.get(p).CardId[i] = players.get(p).Cards[i].suite.val+players.get(p).Cards[i].value.val;
+                        set++;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+        /*
         int[] discards = {1,2,3,4,5};
         for (int i = 0; i < players.size(); i++) {
             players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discards);
         }
+        */
+    }
+
+    public Card[] draw(Card[] cards, int[] discard) {
+        if (discard.length == 0) {
+            return cards;
+        }
+        System.out.println("length = " +discard.length);
+        int set = 0;
+        for (int p = 0; p < players.size(); p++) {
+            for (int i = 0; i < discard.length; i++) {
+                set = 0;
+                while (set == 0) {
+                    cards[discard[i]-1].suite = Card.Suite.randomSuite();
+                    cards[discard[i]-1].value = Card.Value.randomValue();
+                    if (!pile.containsKey(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val)) {
+                        pile.put(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val, 1);
+                        players.get(p).CardId[discard[i]-1] = cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val;
+                        set++;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }  
+        
+        return cards;
     }
 
     public String exportStateAsJSON() {
@@ -100,7 +147,7 @@ public class Game {
             // if the player folds, take them out of the game and should not be able to make moves anymore
         } 
         else if (event.event == UserEventType.DRAW) {
-            players.get(event.playerID).Cards = players.get(event.playerID).draw(players.get(event.playerID).Cards, event.discard);
+            players.get(event.playerID).Cards = draw(players.get(event.playerID).Cards, event.discard);
             if(event.discard.length!=0)
             {
                 whoDrew.add(event.playerID+1);
@@ -143,16 +190,16 @@ public class Game {
                 players.get(j).Cards = Hand.sortHand(players.get(j).Cards);
                 hands[j] = new Hand();
                 hands[j].cards = players.get(j).Cards;
+                hands[j].rank = hands[j].ranking(hands[j]);
             }
-            if (hands[0].is_better_than(hands[1])) {
-                players.get(1).lose();
-                winner_id = 0;
-            } 
-            else if (hands[1].is_better_than(hands[0])) {
-                players.get(0).lose();
-                winner_id = 1;
-            } else {
-                winner_id = 500; // A winner id of 500 means that there has been an error
+            winner_id = 0;
+            System.out.println("Player 1 has " + hands[0].rank.rank);
+            for (int i = 1; i < players.size(); i++) {
+                System.out.println("Player " + (i+1) + " has " + hands[i].rank.rank);
+                if (hands[i].rank.rank > hands[winner_id].rank.rank) {
+                    players.get(winner_id).lose();
+                    winner_id = i;
+                }
             }
             //It is the showdown round and put the hands of both players through the is_better_than() in Hand.java
         }

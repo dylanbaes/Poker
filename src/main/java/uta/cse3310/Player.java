@@ -18,32 +18,19 @@ public class Player extends Card {
     int[] CardId = new int[5];
     String LastMessageToPlayer;
 
-    public static HashMap<Integer, Integer> pile = new HashMap<>();
+    
 
     public Player(int id)  {
         Id = id;
         Name = "not set";
         Cards = new Card[5];
-        int set = 0;
+        //int set = 0;
         // dealing implementation that makes sure that specific card has not been dealt already
-        for (int i = 0; i < 5; i++) {
-            set = 0;
-            while (set == 0) {
-                Cards[i] = new Card();
-                Cards[i].suite = Card.Suite.randomSuite();
-                Cards[i].value = Card.Value.randomValue();
-                if (!pile.containsKey(Cards[i].suite.val+Cards[i].value.val)) {
-                    pile.put(Cards[i].suite.val+Cards[i].value.val, 1);
-                    CardId[i] = Cards[i].suite.val+Cards[i].value.val;
-                    set++;
-                } else {
-                    continue;
-                }
-            }
-        }
+        /*
         for (int i = 0; i < 5; i++) {
             System.out.println("Player " + Id + " has " + Cards[i].value + " of " + Cards[i].suite);
         }
+        */
         // This dealing implementation is ok for now because 2 people only cover 10 cards in one suite so it wouldn't overflow
         // But this needs to be optimized if more players are going to join
 
@@ -51,6 +38,7 @@ public class Player extends Card {
 
     // given their hand and the index of cards they want to discard
     // draw new cards and discard the index cards for the new ones.
+    /*
     public Card[] draw(Card[] cards, int[] discard) {
         if (discard.length == 0) {
             return cards;
@@ -73,6 +61,7 @@ public class Player extends Card {
         }
         return cards;
     }
+    */
 
     // To implement the ready up functionality, when there are more than one player in the lobby, let the clients get to the ready stage
     // if the readyUp integer == numPlayers, then create a new Game and start as usual
@@ -123,8 +112,10 @@ public class Player extends Card {
         return gson.toJson(this);
     }
 
+    /*
     public void newPile () {
         Player.pile = new HashMap<>();
     }
+    */
 
 }

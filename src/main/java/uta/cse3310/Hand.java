@@ -44,6 +44,10 @@ public class Hand extends Card {
         return newHand;
     }
     
+    public Rank ranking(Hand H) {
+        return findRank(this.cards);
+    }
+
     public boolean is_better_than(Hand H)
     {
         this.rank = findRank(this.cards);
