@@ -71,28 +71,26 @@ public class Game {
         */
     }
 
-    public Card[] draw(Card[] cards, int[] discard) {
+    public Card[] draw(int playerID, Card[] cards, int[] discard) {
         if (discard.length == 0) {
             return cards;
         }
         System.out.println("length = " +discard.length);
         int set = 0;
-        for (int p = 0; p < players.size(); p++) {
-            for (int i = 0; i < discard.length; i++) {
-                set = 0;
-                while (set == 0) {
-                    cards[discard[i]-1].suite = Card.Suite.randomSuite();
-                    cards[discard[i]-1].value = Card.Value.randomValue();
-                    if (!pile.containsKey(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val)) {
-                        pile.put(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val, 1);
-                        players.get(p).CardId[discard[i]-1] = cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val;
-                        set++;
-                    } else {
-                        continue;
-                    }
+        for (int i = 0; i < discard.length; i++) {
+            set = 0;
+            while (set == 0) {
+                cards[discard[i]-1].suite = Card.Suite.randomSuite();
+                cards[discard[i]-1].value = Card.Value.randomValue();
+                if (!pile.containsKey(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val)) {
+                    pile.put(cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val, 1);
+                    players.get(playerID).CardId[discard[i]-1] = cards[discard[i]-1].suite.val+cards[discard[i]-1].value.val;
+                    set++;
+                } else {
+                    continue;
                 }
             }
-        }  
+        }
         
         return cards;
     }
@@ -147,7 +145,7 @@ public class Game {
             // if the player folds, take them out of the game and should not be able to make moves anymore
         } 
         else if (event.event == UserEventType.DRAW) {
-            players.get(event.playerID).Cards = draw(players.get(event.playerID).Cards, event.discard);
+            players.get(event.playerID).Cards = draw(event.playerID, players.get(event.playerID).Cards, event.discard);
             if(event.discard.length!=0)
             {
                 whoDrew.add(event.playerID+1);
