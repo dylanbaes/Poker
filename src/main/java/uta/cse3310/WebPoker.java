@@ -47,6 +47,10 @@ public class WebPoker extends WebSocketServer {
 
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+    
+    // if the game is ongoing, then wait until the game is over (game.start == 0) then you can add in the new player
+    // if a player is waiting to be added, they should be put in the waiting room where they can select to press join game
+    // after joining the game, they should be put in the ready room where they can ready up 
 
     // Since this is a new connection, it is also a new player
     numPlayers = numPlayers + 1; // player id's start at 0

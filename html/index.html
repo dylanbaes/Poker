@@ -222,15 +222,6 @@
         document.getElementById("loseView").classList.add("hidden");
         start = 1;
       } 
-      /*
-      else if (obj.players.length > 1 && start == 0) {
-        document.getElementById("pot").classList.remove("hidden");
-        document.getElementById("cards").classList.remove("hidden");
-        document.getElementById("waitView").classList.add("hidden");
-        document.getElementById("rounds").innerText = "It is Player " + (obj.turn+1) + "'s turn";
-        start++;
-      }
-      */
       if (start==0){
         return;
       }
@@ -303,6 +294,7 @@
         winner_processed = true;
         document.getElementById("winnings").classList.remove("hidden");
         document.getElementById("endView").classList.remove("hidden");
+        document.getElementById("newgame").classList.remove("hidden");
         document.getElementById("pot").classList.add("hidden");
         document.getElementById("cards").classList.add("hidden");
         document.getElementById("actionButtons").classList.add("hidden");
@@ -594,6 +586,7 @@
       document.getElementById("stand").classList.remove("hidden");
       document.getElementById("bet").classList.remove("hidden");
       document.getElementById("actionButtons").classList.add("hidden");
+      document.getElementById("newgame").classList.add("hidden");
     }
     return;
   }

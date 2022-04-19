@@ -63,12 +63,6 @@ public class Game {
                 }
             }
         }
-        /*
-        int[] discards = {1,2,3,4,5};
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).Cards = players.get(i).draw(players.get(i).Cards, discards);
-        }
-        */
     }
 
     public Card[] draw(int playerID, Card[] cards, int[] discard) {
@@ -166,17 +160,16 @@ public class Game {
             turn++;
             
         }
-        /*
-        if (players.get(turn).lose) {
-            turn++;
-        }
-        */
         if (turn > players.size() - 1) {
             turn = 0;
             round_num += 1;
         }
         if (players.get(turn).lose) {
             turn++;
+            if (turn > players.size() - 1) {
+                turn = 0;
+                round_num += 1;
+            }
         }
         if (round_num==2) {
             //It is draw round and we need to discard and draw new cards for each user if they choose to
