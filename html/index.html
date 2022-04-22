@@ -7,7 +7,10 @@
   <link rel="stylesheet" href="page_style.css">
 </head>
 
-<div id ="credentials"></div>
+<div style="text-align: center; background-color: black; color: white; padding: 20px;" id="credentials">
+
+</div>
+
 <body>
   <!--
   <p>message: <input id="send_text" type="text">
@@ -20,84 +23,94 @@
     </p>
   </div>
   -->
-  
 
-  
 
-  
 
-  
 
-  
 
-  <div id = "waitView">
+
+
+
+
+
+  <div id="waitView">
     <div id="waiting">
       <h1>
         Waiting for more players...
       </h1>
     </div>
-    <div id="readyStage" class="hidden">
-      <button id="ready" onclick="ready()">Ready Up</button>
-      <button id="readyNo" onclick="readyNo()" class="hidden">Not Ready</button>
+    <div style="text-align: center; margin: 20px;">
+      <label for="playerName"> Player Name: </label>
+      <input id="playerName" type="text" />
+    </div>
+    <div id="readyStage" style="text-align: center; margin: 20px;" class="hidden">
+      <button id="ready" style=" background-color: aquamarine; padding: 10px; " onclick="ready()">Ready Up</button>
+      <button id="readyNo" style="background-color: red; padding: 10px; " onclick="readyNo()" class="hidden">Not
+        Ready</button>
     </div>
   </div>
 
-  <div id = "gameView" class="hidden">
+  <div id="gameView" class="hidden">
     <div id="rounds">
-
     </div>
+
+    <div
+      style="width: 100%; margin: 0; background-color: white; text-align: center; border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;">
+      <div id="roundDisplay"></div>
+    </div>
+
 
     <h1 id="pot">
       Current Pot: 0
     </h1>
-  
+
     <h1 id="timer" class="hidden">
       0:30
     </h1>
 
-    <div id="cards">
+    <div style="text-align: center; margin-bottom: 40px;" id="cards">
       <img id="card1" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c1" value="1" class="hidden">
-      <label for="c1">Card 1</label>
+
       <img id="card2" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c2" value="2" class="hidden">
-      <label for="c2">Card 2</label>
+
       <img id="card3" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c3" value="3" class="hidden">
-      <label for="c3">Card 3</label>
+
       <img id="card4" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c4" value="4" class="hidden">
-      <label for="c4">Card 4</label>
+
       <img id="card5" src="1J.svg" style="width:auto;">
       <input type="checkbox" id="c5" value="5" class="hidden">
-      <label for="c5">Card 5</label>
+
     </div>
 
-    <div id="actionButtons" class="hidden">
+    <div style="text-align: center;" id="actionButtons" class="hidden">
       <button id="stand" onclick="stand(0)">Stand</button>
       <button id="bet" onclick="bet(0)">Bet</button>
       <button id="fold" onclick="fold(0)">Fold</button>
     </div>
-    <div id="standPrompt" class="hidden">
+    <div style="text-align: center;" id="standPrompt" class="hidden">
       <button id="Confirm" onclick="stand(1)">Confirm</button>
       <button id="Cancel" onclick="stand(-1)">Cancel</button>
     </div>
-    <div id="foldPrompt" class="hidden">
+    <div style="text-align: center;" id="foldPrompt" class="hidden">
       <button id="Confirm" onclick="fold(1)">Confirm</button>
       <button id="Cancel" onclick="fold(-1)">Cancel</button>
     </div>
-    <div id="slide" class="hidden">
+    <div style="text-align: center;" id="slide" class="hidden">
       <span id="rangeValue">1</span>
-      <input type="range" id="slider" min="1" max="100" value="0" class="slider" id="myRange" onchange="rangeSlide(this.value)" onmousemove="rangeSlide(this.value)">
+      <input type="range" id="slider" min="1" max="100" value="0" class="slider" id="myRange"
+        onchange="rangeSlide(this.value)" onmousemove="rangeSlide(this.value)">
       <button id="confirm" onclick="bet(slider.value)">Confirm</button>
       <button id="cancel" onclick="bet(-1)">Cancel</button>
     </div>
-    <div id="drawPrompt" class="hidden">
+    <div style="text-align: center; margin-top: 10px;" id="drawPrompt" class="hidden">
       <button id="Confirm" onclick="draw()">Confirm</button>
     </div>
 
     <div id="textbox" class="hidden"></div>
-    <div id="roundDisplay"></div>
   </div>
 
   <div id="loseView" class="hidden">
@@ -130,8 +143,8 @@
   var connection = null;
 
   var serverUrl;
-  serverUrl ="ws://" + window.location.hostname + ":8887";
-  
+  serverUrl = "ws://" + window.location.hostname + ":8887";
+
   connection = new WebSocket(serverUrl);
   connection.onopen = function (evt) {
     console.log("open");
@@ -140,7 +153,8 @@
   var cardIdx = 0;
   var playerID = 0;
   var cards = [];
-  var name = "Player " + (playerID+1);
+  var name = document.getElementById("playerName").value;
+
   var cardI = ["card1", "card2", "card3", "card4", "card5"];
   var start = 0;
   var t;
@@ -164,7 +178,7 @@
 
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
-    
+
     if (!obj.players) {
       playerID = obj.Id;
       console.log("player ID = " + playerID);
@@ -173,23 +187,20 @@
       }
       document.getElementById("textbox").innerText + '\n\n' + "Player ID is " + playerID;
       for (let i = 0; i < 5; i++) {
-        document.getElementById(cardI[i]).src = cards[i].toString()+".svg";
+        document.getElementById(cardI[i]).src = cards[i].toString() + ".svg";
         //console.log("attempted " + cardI[i] + " " + cards[i].toString()+".svg");
       }
-      name = "Player " + (playerID+1);
-      document.getElementById("credentials").innerHTML='ID:'+playerID+'\n'+name;
-    } 
-    else 
-    {
+      document.getElementById("credentials").innerHTML = 'Player ID: ' + playerID + '\n' + name;
+    }
+    else {
       document.getElementById("loseView").classList.add("hidden");
-      if (obj.start == 0) 
-      {
+      if (obj.start == 0) {
         document.getElementById("waitView").classList.remove("hidden");
         document.getElementById("ready").classList.remove("hidden");
         document.getElementById("readyNo").classList.add("hidden");
         winner_processed = false;
         winner_id = -1;
-        
+
       }
       if (obj.players.length < 2 && obj.start == 0) {
         document.getElementById("waiting").classList.remove("hidden");
@@ -208,9 +219,9 @@
         for (const player of obj.players) {
           if (playerID == player.Id) {
             for (let i = 0; i < 5; i++) {
-              var filename = player.CardId[i]+".svg";
+              var filename = player.CardId[i] + ".svg";
               //console.log("changing " + document.getElementById(cardI[i]).src + " to " + filename);
-              document.getElementById(cardI[i]).src=filename;
+              document.getElementById(cardI[i]).src = filename;
             }
           }
         }
@@ -221,12 +232,12 @@
         document.getElementById("endView").classList.add("hidden");
         document.getElementById("loseView").classList.add("hidden");
         start = 1;
-      } 
-      if (start==0){
+      }
+      if (start == 0) {
         return;
       }
       console.log(obj.players.length);
-      
+
       console.log("player ID = " + playerID + " turn = " + obj.turn);
       for (const player of obj.players) {
         if (playerID == player.Id && player.lose == true) {
@@ -236,60 +247,49 @@
           return;
         }
       }
-      function t_sec()
-      {
-        if(t >= 0)
-        {
-          if(t > 9)
-          {
+      function t_sec() {
+        if (t >= 0) {
+          if (t > 9) {
             document.getElementById("timer").innerText = "0:" + t;
           }
-          else
-          {
+          else {
             document.getElementById("timer").innerText = "0:0" + t;
           }
           t--;
         }
-        else
-        {
+        else {
           document.getElementById("timer").innerText = "0:30";
         }
       }
-      function t_total()
-      {
-        if(obj.round_num==2)
-        {
+      function t_total() {
+        if (obj.round_num == 2) {
           alert("Out of time, checked cards will be swapped");
           draw();
         }
-        else
-        {
+        else {
           alert("Out of time, defaulting to stand");
           stand(1);
         }
       }
       document.getElementById("slider").max = obj.money[playerID];
       document.getElementById("pot").innerText = "Current Pot: " + obj.pot;
-      if (obj.winner_id != -1 && !(winner_processed) )
-      {
+      if (obj.winner_id != -1 && !(winner_processed)) {
         clearTimeout(timer_total);
         clearInterval(timer_sec);
         document.getElementById("timer").classList.add("hidden");
         obj.round_num = 5;
-        if(playerID == obj.winner_id)
-        {
+        if (playerID == obj.winner_id) {
           alert("You won!");
           var msg = {
-          event: "WIN",
-          playerID: obj.winner_id
+            event: "WIN",
+            playerID: obj.winner_id
           };
           connection.send(JSON.stringify(msg));
           console.log(msg);
           document.getElementById("winnings").innerText = "Winnings: " + obj.pot;
         }
-        else
-        {
-          alert("Player #" + (obj.winner_id+1) + " Won!");
+        else {
+          alert("Player #" + (obj.winner_id + 1) + " Won!");
         }
         winner_processed = true;
         document.getElementById("winnings").classList.remove("hidden");
@@ -306,28 +306,26 @@
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round #1";
           if (obj.turn == playerID && obj.round_num == 1 && obj.turn == 0) {
             document.getElementById("actionButtons").classList.remove("hidden");
-            if(!obj.money[playerID])
-            {
+            if (!obj.money[playerID]) {
               document.getElementById("bet").classList.add("hidden");
             }
             document.getElementById("fold").classList.add("hidden");
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
-            timer_sec = setInterval(t_sec,1000);
-            timer_total = setTimeout(t_total,30000);
+            timer_sec = setInterval(t_sec, 1000);
+            timer_total = setTimeout(t_total, 30000);
           }
           else if (obj.turn == playerID) {
             document.getElementById("actionButtons").classList.remove("hidden");
-            if(!obj.money[playerID])
-            {
+            if (!obj.money[playerID]) {
               document.getElementById("bet").classList.add("hidden");
             }
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
-            timer_sec = setInterval(t_sec,1000);
-            timer_total = setTimeout(t_total,30000);
+            timer_sec = setInterval(t_sec, 1000);
+            timer_total = setTimeout(t_total, 30000);
           }
-          
+
           break;
         case 2:
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nDraw Round\nPlease check the cards that you would like to discard"; // Draw Round
@@ -335,34 +333,31 @@
             alert("Please tick the cards that you would like to discard");
             document.getElementById("drawPrompt").classList.remove("hidden");
             for (let i = 1; i < 6; i++) {
-              document.getElementById("c"+(i)).classList.remove("hidden");
+              document.getElementById("c" + (i)).classList.remove("hidden");
             }
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
-            timer_sec = setInterval(t_sec,1000);
-            timer_total = setTimeout(t_total,30000);
+            timer_sec = setInterval(t_sec, 1000);
+            timer_total = setTimeout(t_total, 30000);
           }
           break;
         case 3:
           document.getElementById("roundDisplay").innerText = "\n\nCurrent Round:\nBetting Round";
           if (obj.turn == playerID) {
             document.getElementById("actionButtons").classList.remove("hidden");
-            if(!obj.whoDrew.length)
-            {
+            if (!obj.whoDrew.length) {
               alert("No one discarded");
             }
-            else
-            {
+            else {
               alert("Players who discarded: " + obj.whoDrew);
             }
-            if(!obj.money[playerID])
-            {
+            if (!obj.money[playerID]) {
               document.getElementById("bet").classList.add("hidden");
             }
             document.getElementById("timer").classList.remove("hidden");
             t = 29;
-            timer_sec = setInterval(t_sec,1000);
-            timer_total = setTimeout(t_total,30000);
+            timer_sec = setInterval(t_sec, 1000);
+            timer_total = setTimeout(t_total, 30000);
           }
           break;
         case 4:
@@ -459,19 +454,17 @@
     else if (cond == -1) {
       document.getElementById("standPrompt").classList.add("hidden");
       document.getElementById("bet").classList.remove("hidden");
-      if(!first_turn)
-      {
+      if (!first_turn) {
         document.getElementById("fold").classList.remove("hidden");
       }
     } else {
-      if(first_turn)
-      {
+      if (first_turn) {
         first_turn = false;
       }
       clearTimeout(timer_total);
       clearInterval(timer_sec);
       document.getElementById("timer").classList.add("hidden");
-        var msg = {
+      var msg = {
         event: "STAND",
         playerID: playerID,
         name: name
@@ -494,8 +487,8 @@
     let draw = [];
     let j = 0;
     for (let i = 0; i < 5; i++) {
-      if (document.getElementById("c"+(i+1)).checked) {
-        draw[j] = document.getElementById("c"+(i+1)).value;
+      if (document.getElementById("c" + (i + 1)).checked) {
+        draw[j] = document.getElementById("c" + (i + 1)).value;
         j++;
       }
     }
@@ -508,17 +501,16 @@
     };
     connection.send(JSON.stringify(msg));
     for (let i = 1; i < 6; i++) {
-      document.getElementById("c"+(i)).classList.add("hidden");
+      document.getElementById("c" + (i)).classList.add("hidden");
     }
     document.getElementById("drawPrompt").classList.add("hidden");
-    
+
     return;
   }
 
   function bet(cond) {
     if (cond > 0) {
-      if(first_turn)
-      {
+      if (first_turn) {
         first_turn = false;
       }
       clearTimeout(timer_total);
@@ -548,13 +540,12 @@
     else if (cond == -1) {
       document.getElementById("slide").classList.add("hidden");
       document.getElementById("stand").classList.remove("hidden");
-      if(!first_turn)
-      {
+      if (!first_turn) {
         document.getElementById("fold").classList.remove("hidden");
       }
       return;
     }
-    
+
     //connection.send(JSON.stringify({BET}));
     console.log("Bet");
   }
@@ -599,9 +590,9 @@
     document.getElementById("readyNo").classList.remove("hidden");
     document.getElementById("ready").classList.add("hidden");
     var msg = {
-        event: "READY",
-        playerID: playerID,
-        name: name
+      event: "READY",
+      playerID: playerID,
+      name: name
     };
     connection.send(JSON.stringify(msg));
     console.log(msg);
@@ -611,9 +602,9 @@
     document.getElementById("readyNo").classList.add("hidden");
     document.getElementById("ready").classList.remove("hidden");
     var msg = {
-        event: "NOTREADY",
-        playerID: playerID,
-        name: name
+      event: "NOTREADY",
+      playerID: playerID,
+      name: name
     };
     connection.send(JSON.stringify(msg));
     console.log(msg);
@@ -630,4 +621,3 @@
   }
 
 </script>
-
