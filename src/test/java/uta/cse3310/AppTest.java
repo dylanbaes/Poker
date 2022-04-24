@@ -173,8 +173,6 @@ public class AppTest
 	
 // 	the cards are distributed to all players
 // 	game.deal();
-
-
 	assertrue( game.deal() );
     }
 
@@ -270,19 +268,14 @@ public class AppTest
 
         Hand.sortHand(testingsortcard);
 
-        assertTrue( for(int i = 0; i < 5; i++)
-			{
- 			  testingsortcard[i] == correctsortCard[i];
-			});
-  						  
+        assertTrue(for(int i = 0; i < 5; i++){ testingsortcard[i] == correctsortCard[i];}); 						  
    }
-
 
     /*
     Test the 2 Players of the game, does the card distributed
     */
     @Test 
-    public void testHanddistrubute()
+    public void testHand()
     {
 	Game game = new Game();
 
