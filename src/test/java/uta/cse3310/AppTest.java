@@ -244,7 +244,7 @@ public class AppTest
     @Test 
     public void testbetterHandsorting()
     {
-	// Hand 2 : HIGH CARDS
+	// Hand 2 : 1 PAIR CARDS
 
 	Card c1 = new Card();
         c1.value = Card.Value.ACE;
@@ -261,29 +261,40 @@ public class AppTest
 	Card c4 = new Card();
         c4.value = Card.Value.KING;
         c4.suite = Card.Suite.SPADES;
-        
-	// Hand 2 : PAIR CARDS
-
+	    
 	Card c5 = new Card();
         c1.value = Card.Value.ACE;
         c1.suite = Card.Suite.DIAMONDS;
         
+	// Hand 2 : 2 PAIR CARDS
+
 	Card c6 = new Card();
-        c2.value = Card.Value.ACE;
-        c2.suite = Card.Suite.SPADES;
+        c6.value = Card.Value.ACE;
+        c6.suite = Card.Suite.DIAMONDS;
         
 	Card c7 = new Card();
-        c3.value = Card.Value.SIX;
-        c3.suite = Card.Suite.DIAMONDS;
+        c7.value = Card.Value.ACE;
+        c7.suite = Card.Suite.SPADES;
         
 	Card c8 = new Card();
-        c4.value = Card.Value.TWO;
-        c4.suite = Card.Suite.DIAMONDS;
+        c8.value = Card.Value.SIX;
+        c8.suite = Card.Suite.DIAMONDS;
+        
+	Card c9 = new Card();
+        c9.value = Card.Value.TWO;
+        c9.suite = Card.Suite.DIAMONDS;
+	    
+	Card c10 = new Card();
+        c10.value = Card.Value.TWO;
+        c10.suite = Card.Suite.DIAMONDS;
         
 
-        Card Hand1[4] = {c2,c1,c4,c3};
-        Card Hand2[4] = {c5,c6,c7,c8};
+        Card Hand1[] = {c2,c1,c4,c3,c5};
+        Card Hand2[] = {c10,c6,c7,c8,c9};
 
+	Hand.sortHand(Hand1);
+	Hand.sortHand(Hand2);
+	    
 	   if  (Hand2.isbetterHand(Hand1) == true)
 		{
 		assertTrue(true);   
@@ -315,8 +326,8 @@ public class AppTest
         
 
 
-        Card testingsortcard[4] = {c2,c1,c4,c3};
-        Card correctsortCard[4] = {c1,c2,c3,c4};
+        Card testingsortcard[] = {c2,c1,c4,c3,c5};
+        Card correctsortCard[] = {c1,c2,c3,c4,c5};
 
         Hand.sortHand(testingsortcard);
 
