@@ -272,7 +272,7 @@ public class AppTest
 
         assertTrue( for(int i = 0; i < 5; i++)
 			{
- 			  testingsortcard[0] == correctsortCard[0];
+ 			  testingsortcard[i] == correctsortCard[i];
 			});
   						  
    }
