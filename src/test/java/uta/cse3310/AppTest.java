@@ -268,8 +268,13 @@ public class AppTest
 
         Hand.sortHand(testingsortcard);
 
-        //assertTrue(for(int i = 0; i < 5; i++){ testingsortcard[i] == correctsortCard[i];}); 	
-	    assertTrue(true);
+	for(int i = 0; i < 5; i++)
+	{
+	   if  (testingsortcard[i] == correctsortCard[i])
+	   {
+		assertTrue(true);   
+	   }
+	}
    }
 
     /*
