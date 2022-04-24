@@ -238,6 +238,58 @@ public class AppTest
 	asserttrue(player0.lose());
    }
 
+         /*
+    Test the does the card distributed get sorted has the better hand check
+    */
+    @Test 
+    public void testbetterHandsorting()
+    {
+	// Hand 2 : HIGH CARDS
+
+	Card c1 = new Card();
+        c1.value = Card.Value.ACE;
+        c1.suite = Card.Suite.DIAMONDS;
+        
+	Card c2 = new Card();
+        c2.value = Card.Value.TWO;
+        c2.suite = Card.Suite.DIAMONDs;
+        
+	Card c3 = new Card();
+        c3.value = Card.Value.SIX;
+        c3.suite = Card.Suite.DIAMONDS;
+        
+	Card c4 = new Card();
+        c4.value = Card.Value.KING;
+        c4.suite = Card.Suite.SPADES;
+        
+	// Hand 2 : PAIR CARDS
+
+	Card c5 = new Card();
+        c1.value = Card.Value.ACE;
+        c1.suite = Card.Suite.DIAMONDS;
+        
+	Card c6 = new Card();
+        c2.value = Card.Value.ACE;
+        c2.suite = Card.Suite.SPADES;
+        
+	Card c7 = new Card();
+        c3.value = Card.Value.SIX;
+        c3.suite = Card.Suite.DIAMONDS;
+        
+	Card c8 = new Card();
+        c4.value = Card.Value.TWO;
+        c4.suite = Card.Suite.DIAMONDS;
+        
+
+        Card Hand1[4] = {c2,c1,c4,c3};
+        Card Hand2[4] = {c5,c6,c7,c8};
+
+	   if  (Hand2.isbetterHand(Hand1) == true)
+		{
+		assertTrue(true);   
+		}
+   }
+
 
       /*
     Test the does the card distributed get sorted
@@ -263,8 +315,8 @@ public class AppTest
         
 
 
-        Card testingsortcard[4] = {c2,c1,c2,c4,c3};
-        Card correctsortCard[4] = {c1,c2,c3,c4,c5};
+        Card testingsortcard[4] = {c2,c1,c4,c3};
+        Card correctsortCard[4] = {c1,c2,c3,c4};
 
         Hand.sortHand(testingsortcard);
 
