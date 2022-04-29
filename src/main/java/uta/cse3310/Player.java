@@ -14,6 +14,7 @@ public class Player extends Card {
     String Name;
     boolean win = false;
     boolean lose = false;
+    boolean active = true;
     Card Cards[];
     int[] CardId = new int[5];
     String LastMessageToPlayer;

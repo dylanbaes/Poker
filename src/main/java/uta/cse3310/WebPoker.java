@@ -89,7 +89,7 @@ public class WebPoker extends WebSocketServer {
     
     synchronized (mutex) {
       game.removePlayer(idx);
-
+      game.losers++;
       System.out.println("removed player index " + idx);
 
       // The state is now changed, so every client needs to be informed
@@ -104,7 +104,13 @@ public class WebPoker extends WebSocketServer {
     synchronized (mutex) {
       // all incoming messages are processed by the game
       if (game.start == 0 && game.newgame == 0) {
+        for (int i = 0; i < game.players.size(); i++) {
+          if (!game.players.get(i).active) {
+            game.players.remove(i);
+          }
+        }
         Player.processReady(message);
+        System.out.println(Player.readyUp + " out of " + game.players.size()+ " ready");
         if(Player.readyUp == game.players.size()) {
           game.start = 1;
           System.out.println("Game has started");
@@ -148,8 +154,14 @@ public class WebPoker extends WebSocketServer {
         synchronized (mutex) {
         }
         if (game.update()) {
+          for (int i = 0; i < game.players.size(); i++) {
+            if (!game.players.get(i).active) {
+              game.players.remove(i);
+            }
+          }
           ArrayList<Player> oldplayers = game.players;
           game = new Game();
+          System.out.println("There are " + oldplayers.size() + " players");
           game.players = oldplayers;
           for (int i = 0; i < game.players.size(); i++) {
             game.players.get(i).reset();

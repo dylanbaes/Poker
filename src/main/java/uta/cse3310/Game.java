@@ -21,6 +21,7 @@ public class Game {
     ArrayList<Player> players = new ArrayList<>();
     public int start = 0;
     public int newgame = 0;
+    int listturn = 0; // index turn processor for player arraylist
     int turn = 0; // player ID that has the current turn
     int round_num = 1;
     int winner_id = -1;
@@ -34,6 +35,7 @@ public class Game {
         System.out.println("creating a Game Object");
         Player.readyUp = 0;
         start = 0;
+        listturn = 0;
         newgame = 0;
         turn = 0;
         round_num = 1;
@@ -63,6 +65,8 @@ public class Game {
                 }
             }
         }
+        turn = players.get(listturn).Id;
+        losers = 0;
     }
 
     public Card[] draw(int playerID, Card[] cards, int[] discard) {
@@ -104,8 +108,14 @@ public class Game {
         // and does whatever else is needed to remove
         // the player from the game.
         System.out.println(playerid +" has been removed");
-        players.get(playerid).lose = true;
-        players.remove(playerid);
+        int index = 0;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).Id == playerid) {
+                index = i;
+            }
+        }
+        players.get(index).lose = true;
+        players.get(index).active = false;
     }
 
     public void processMessage(String msg) {
@@ -115,6 +125,7 @@ public class Game {
         // take the string we just received, and turn it into a user event
         UserEvent event = gson.fromJson(msg, UserEvent.class);
         //int count_losses = 0;
+        turn = players.get(listturn).Id;
         if(event.event == UserEventType.END) {
             round_num = 5;
         }
@@ -122,9 +133,14 @@ public class Game {
             players.get(event.playerID).SetName(event.name);
         }
         else if (event.event == UserEventType.FOLD) {
-            players.get(event.playerID).lose();
-            System.out.println(event.playerID + " folded");
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).Id == event.playerID) {
+                    players.get(i).lose();
+                }
+            }
+            System.out.println(event.playerID + " folded"); 
             losers++;
+            System.out.println("There are " + losers + " out of " + players.size() + " lost");
             if (losers == players.size()-1) {
                 
                 for (int i = 0; i < players.size(); i++) {
@@ -139,7 +155,13 @@ public class Game {
             // if the player folds, take them out of the game and should not be able to make moves anymore
         } 
         else if (event.event == UserEventType.DRAW) {
-            players.get(event.playerID).Cards = draw(event.playerID, players.get(event.playerID).Cards, event.discard);
+            int index = 0;
+            for (int i = 0 ; i < players.size(); i++) {
+                if (players.get(i).Id == event.playerID) {
+                    index = i;
+                }
+            }
+            players.get(index).Cards = draw(index, players.get(index).Cards, event.discard);
             if(event.discard.length!=0)
             {
                 whoDrew.add(event.playerID+1);
@@ -157,18 +179,25 @@ public class Game {
         }
         else
         {
-            turn++;
+            listturn++;
+            if (listturn > players.size() - 1) {
+                listturn = 0;
+                turn = players.get(listturn).Id;
+                round_num += 1;
+            } else {
+                turn = players.get(listturn).Id;
+            }
             
         }
-        if (turn > players.size() - 1) {
-            turn = 0;
-            round_num += 1;
-        }
-        if (players.get(turn).lose) {
-            turn++;
-            if (turn > players.size() - 1) {
-                turn = 0;
+        
+        if (players.get(listturn).lose) {
+            listturn++;
+            if (listturn > players.size() - 1) {
+                listturn = 0;
+                turn = players.get(listturn).Id;
                 round_num += 1;
+            } else {
+                turn = players.get(listturn).Id;
             }
         }
         if (round_num==2) {
@@ -184,7 +213,7 @@ public class Game {
                 hands[j].rank = hands[j].ranking(hands[j]);
             }
             winner_id = 0;
-            System.out.println("Player 1 has " + hands[0].rank.rank);
+            //System.out.println("Player 1 has " + hands[0].rank.rank);
             for (int i = 1; i < players.size(); i++) {
                 System.out.println("Player " + (i+1) + " has " + hands[i].rank.rank);
                 if (hands[i].rank.rank > hands[winner_id].rank.rank) {
@@ -202,26 +231,6 @@ public class Game {
                 newgame = 1;
             }
         }
-        /*
-        for(i=0;i<players.size();i++) // Count number of players who've lost
-        {
-            if(players.get(i).lose)
-            {
-                count_losses++;
-            }
-        }
-        if(count_losses == players.size() - 1) // If every player but one lost, set winner_id
-        {
-            for(i=0;i<players.size();i++)
-            {
-                if(!players.get(i).lose)
-                {
-                    players.get(i).win = true;
-                    winner_id = i;
-                }
-            }
-        }
-        */
 
     }
 
